@@ -1,4 +1,6 @@
 package com.felipemcassiano.Mercatura.models.product;
 
-public record ProductPriceRangeFilterDTO(Integer min, Integer max) {
+import jakarta.annotation.Nullable;
+
+public record ProductPriceRangeFilterDTO(@Nullable Integer min, @Nullable Integer max) {
 }
