@@ -37,6 +37,19 @@ public class UserService {
         userRepository.save(newUser);
     }
 
+    @Transactional
+    public void saveAdmin(UserDTO dto) {
+        if (userRepository.findByEmail(dto.email()) != null) {
+            throw new EntityConflictException("User with email already exists");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(dto.password());
+
+        User newUser = new User(dto.email(), encryptedPassword, UserRole.ADMIN);
+
+        userRepository.save(newUser);
+    }
+
     public String generateUserToken(User user) {
         return tokenService.generateToken(user);
     }

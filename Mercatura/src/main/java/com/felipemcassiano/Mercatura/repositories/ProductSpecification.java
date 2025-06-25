@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductSpecification {
-    public static Specification<Product> filter(Integer min, Integer max, Integer quantity, ProductCategory category) {
+    public static Specification<Product> filter(Long min, Long max, Long stock, ProductCategory category) {
         return (root, query, cb) -> {
             List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
-            if (quantity != null) {
-                predicates.add(cb.equal(root.get("quantity"), quantity));
+            if (stock != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("stock"), stock));
             }
             if (min != null) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("price"), min));

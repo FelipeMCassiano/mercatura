@@ -2,4 +2,8 @@ package com.felipemcassiano.Mercatura.models.shoppingCart;
 
 import com.felipemcassiano.Mercatura.models.product.ProductCategory;
 
-public class CartProductDTO(Long id, String name, Integer price, Long quantity, ProductCategory category) { }
+import java.io.Serializable;
+
+public record CartProductDTO(Long id, String name, Long price, Long quantity,
+                             ProductCategory category) implements Serializable {
+}

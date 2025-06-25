@@ -40,4 +40,10 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("register-admin")
+    public ResponseEntity<Void> registerAdmin(@RequestBody UserDTO request) {
+        userService.saveAdmin(request);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -5,6 +5,7 @@ import com.felipemcassiano.Mercatura.models.product.ProductDTO;
 import com.felipemcassiano.Mercatura.models.product.ProductFilterDTO;
 import com.felipemcassiano.Mercatura.models.product.ProductResponseDTO;
 import com.felipemcassiano.Mercatura.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createProduct(@RequestBody ProductDTO product) {
+    public ResponseEntity<Void> createProduct(@Valid @RequestBody ProductDTO product) {
         productService.save(product);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -37,13 +38,13 @@ public class ProductController {
     }
 
 
-    @PostMapping("{id}")
+    @PutMapping("{id}")
     public ResponseEntity<Void> updateProduct(@RequestBody ProductDTO product, @PathVariable Long id) {
         productService.update(product, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("{id]")
+    @GetMapping("{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
         var responseDTO = productService.findById(id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);

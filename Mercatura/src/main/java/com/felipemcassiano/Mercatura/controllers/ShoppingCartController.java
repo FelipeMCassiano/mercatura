@@ -1,8 +1,11 @@
 package com.felipemcassiano.Mercatura.controllers;
 
+import com.felipemcassiano.Mercatura.models.shoppingCart.AddItemDTO;
+import com.felipemcassiano.Mercatura.models.shoppingCart.CheckoutResponseDTO;
 import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCartDTO;
 import com.felipemcassiano.Mercatura.models.user.User;
 import com.felipemcassiano.Mercatura.services.ShoppingCartService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +32,18 @@ public class ShoppingCartController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> post(@AuthenticationPrincipal User userDetails, @RequestBody Long productId) {
+    public ResponseEntity<Void> post(@AuthenticationPrincipal User userDetails, @RequestBody @Valid AddItemDTO request) {
         String userEmail = userDetails.getUsername();
-        shoppingCartService.addToCart(userEmail, productId);
+        shoppingCartService.addToCart(userEmail, request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<CheckoutResponseDTO> checkout(@AuthenticationPrincipal User userDetails) {
+        String userEmail = userDetails.getUsername();
+        CheckoutResponseDTO response = shoppingCartService.checkout(userEmail);
+
+        return ResponseEntity.ok(response);
     }
 
 }

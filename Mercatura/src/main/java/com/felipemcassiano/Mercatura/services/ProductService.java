@@ -28,7 +28,9 @@ public class ProductService {
         if (productRepository.existsByName(dto.name())) {
             throw new EntityConflictException("Product already exists");
         }
+
         Product newProduct = new Product(dto);
+        newProduct.setPrice(dto.price() * 100);
         productRepository.save(newProduct);
     }
 
@@ -38,25 +40,26 @@ public class ProductService {
 
         product.setPrice(dto.price());
         product.setName(dto.name());
-        product.setQuantity(dto.quantity());
+        product.setStock(dto.stock());
+        product.setCategory(dto.category());
         productRepository.save(product);
     }
 
     public ProductResponseDTO findById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
-        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getQuantity(), product.getCategory());
+        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getStock(), product.getCategory());
     }
 
     public List<ProductResponseDTO> findAll() {
         List<Product> products = productRepository.findAll();
         return products
                 .stream()
-                .map(p -> new ProductResponseDTO(p.getId(), p.getName(), p.getPrice(), p.getQuantity(), p.getCategory())).toList();
+                .map(p -> new ProductResponseDTO(p.getId(), p.getName(), p.getPrice(), p.getStock(), p.getCategory())).toList();
     }
 
     public List<ProductResponseDTO> filter(ProductFilterDTO dto) {
-        List<Product> products = productRepository.findAll(ProductSpecification.filter(dto.priceRange() != null ? dto.priceRange().min() : null, dto.priceRange() != null ? dto.priceRange().max() : null, dto.quantity(), dto.category()));
-        return products.stream().map(x -> new ProductResponseDTO(x.getId(), x.getName(), x.getPrice(), x.getQuantity(), x.getCategory())).collect(Collectors.toList());
+        List<Product> products = productRepository.findAll(ProductSpecification.filter(dto.priceRange() != null ? dto.priceRange().min() : null, dto.priceRange() != null ? dto.priceRange().max() : null, dto.stock(), dto.category()));
+        return products.stream().map(x -> new ProductResponseDTO(x.getId(), x.getName(), x.getPrice(), x.getStock(), x.getCategory())).collect(Collectors.toList());
     }
 
 

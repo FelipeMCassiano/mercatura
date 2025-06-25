@@ -1,4 +1,4 @@
 package com.felipemcassiano.Mercatura.models.shoppingCart;
 
-public record CheckoutResponse() {
+public record CheckoutResponseDTO(String status, String message, String sessionId, String sessionUrl) {
 }

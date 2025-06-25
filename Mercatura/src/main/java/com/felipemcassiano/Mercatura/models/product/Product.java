@@ -6,11 +6,12 @@ import jakarta.persistence.*;
 @Entity
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Integer price;
-    private Long quantity;
+    private Long price;
+    private Long stock;
+    @Enumerated(EnumType.STRING)
     private ProductCategory category;
 
     public Product() {
@@ -19,7 +20,8 @@ public class Product {
     public Product(ProductDTO dto) {
         this.name = dto.name();
         this.price = dto.price();
-        this.quantity = dto.quantity();
+        this.stock = dto.stock();
+        this.category = dto.category();
     }
 
     public Long getId() {
@@ -34,20 +36,20 @@ public class Product {
         this.name = name;
     }
 
-    public Integer getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
-    public Long getQuantity() {
-        return quantity;
+    public Long getStock() {
+        return stock;
     }
 
-    public void setQuantity(Long quantity) {
-        this.quantity = quantity;
+    public void setStock(Long quantity) {
+        this.stock = quantity;
     }
 
     public ProductCategory getCategory() {
