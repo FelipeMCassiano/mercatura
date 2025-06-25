@@ -9,8 +9,12 @@ import com.felipemcassiano.Mercatura.repositories.ProductRepository;
 import com.felipemcassiano.Mercatura.repositories.ProductSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,9 +22,13 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ValueOperations<String, ProductResponseDTO> redisTemplateValueOps;
+    @Value("${api.cache.duration}")
+    private long cacheDuration;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, RedisTemplate<String, ProductResponseDTO> redisTemplate) {
         this.productRepository = productRepository;
+        this.redisTemplateValueOps = redisTemplate.opsForValue();
     }
 
     @Transactional
@@ -46,8 +54,19 @@ public class ProductService {
     }
 
     public ProductResponseDTO findById(Long id) {
+        String key = String.format("product:%s", id);
+        ProductResponseDTO cachedProduct = redisTemplateValueOps.get(key);
+        if (cachedProduct != null) {
+            return cachedProduct;
+        }
+
         Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
-        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getStock(), product.getCategory());
+
+        ProductResponseDTO productResponse = new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getStock(), product.getCategory());
+
+        redisTemplateValueOps.set(key, productResponse, Duration.ofMinutes(1));
+
+        return productResponse;
     }
 
     public List<ProductResponseDTO> findAll() {

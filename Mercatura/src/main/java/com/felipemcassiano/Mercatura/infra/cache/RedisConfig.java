@@ -1,6 +1,7 @@
 package com.felipemcassiano.Mercatura.infra.cache;
 
 
+import com.felipemcassiano.Mercatura.models.product.ProductResponseDTO;
 import com.felipemcassiano.Mercatura.models.shoppingCart.CartProductDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,17 +14,30 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     @Bean
-    public RedisTemplate<String, CartProductDTO> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, CartProductDTO> cartProductRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, CartProductDTO> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(CartProductDTO.class));
-
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(CartProductDTO.class));
 
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
+
+    @Bean
+    public RedisTemplate<String, ProductResponseDTO> productResponseRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, ProductResponseDTO> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(ProductResponseDTO.class));
+
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
 }
+
+
