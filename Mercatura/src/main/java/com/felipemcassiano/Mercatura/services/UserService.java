@@ -1,9 +1,9 @@
 package com.felipemcassiano.Mercatura.services;
 
+import com.felipemcassiano.Mercatura.dtos.UserDTO;
 import com.felipemcassiano.Mercatura.infra.exceptions.EntityConflictException;
 import com.felipemcassiano.Mercatura.infra.security.TokenService;
 import com.felipemcassiano.Mercatura.models.user.User;
-import com.felipemcassiano.Mercatura.models.user.UserDTO;
 import com.felipemcassiano.Mercatura.models.user.UserRole;
 import com.felipemcassiano.Mercatura.repositories.UserRepository;
 import jakarta.transaction.Transactional;

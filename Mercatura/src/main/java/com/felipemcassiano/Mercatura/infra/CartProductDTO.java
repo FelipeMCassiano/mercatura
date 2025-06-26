@@ -1,4 +1,4 @@
-package com.felipemcassiano.Mercatura.models.shoppingCart;
+package com.felipemcassiano.Mercatura.infra;
 
 import com.felipemcassiano.Mercatura.models.product.ProductCategory;
 

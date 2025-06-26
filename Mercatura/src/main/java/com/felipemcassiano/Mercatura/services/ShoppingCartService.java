@@ -1,11 +1,11 @@
 package com.felipemcassiano.Mercatura.services;
 
+import com.felipemcassiano.Mercatura.dtos.AddItemDTO;
+import com.felipemcassiano.Mercatura.infra.CartProductDTO;
+import com.felipemcassiano.Mercatura.infra.CheckoutResponseDTO;
 import com.felipemcassiano.Mercatura.infra.exceptions.NotEnoughStockException;
 import com.felipemcassiano.Mercatura.models.product.Product;
-import com.felipemcassiano.Mercatura.models.shoppingCart.AddItemDTO;
-import com.felipemcassiano.Mercatura.models.shoppingCart.CartProductDTO;
-import com.felipemcassiano.Mercatura.models.shoppingCart.CheckoutResponseDTO;
-import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCartDTO;
+import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCart;
 import com.felipemcassiano.Mercatura.repositories.ProductRepository;
 import com.felipemcassiano.Mercatura.repositories.UserRepository;
 import org.springframework.data.redis.core.ListOperations;
@@ -55,23 +55,23 @@ public class ShoppingCartService {
         redisListOps.rightPush(key, productToBeCached);
     }
 
-    public ShoppingCartDTO getCartByUser(String userEmail) {
+    public ShoppingCart getCartByUser(String userEmail) {
         return getShoppingCartByUser(userEmail);
     }
 
     public CheckoutResponseDTO checkout(String userEmail) {
-        ShoppingCartDTO shoppingCartDTO = getShoppingCartByUser(userEmail);
+        ShoppingCart shoppingCartDTO = getShoppingCartByUser(userEmail);
         return stripeService.checkout(shoppingCartDTO);
     }
 
-    private ShoppingCartDTO getShoppingCartByUser(String userEmail) {
+    private ShoppingCart getShoppingCartByUser(String userEmail) {
         String key = String.format("cart:%s", userEmail);
 
         List<CartProductDTO> cart = redisListOps.range(key, 0, -1);
 
         Long total = cart != null ? cart.stream().map(x -> x.price() * x.quantity()).reduce(0l, Long::sum) : 0;
 
-        return new ShoppingCartDTO(cart, total);
+        return new ShoppingCart(cart, total);
     }
 
 }

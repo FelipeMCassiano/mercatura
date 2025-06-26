@@ -1,8 +1,8 @@
 package com.felipemcassiano.Mercatura.controllers;
 
-import com.felipemcassiano.Mercatura.models.shoppingCart.AddItemDTO;
-import com.felipemcassiano.Mercatura.models.shoppingCart.CheckoutResponseDTO;
-import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCartDTO;
+import com.felipemcassiano.Mercatura.dtos.AddItemDTO;
+import com.felipemcassiano.Mercatura.infra.CheckoutResponseDTO;
+import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCart;
 import com.felipemcassiano.Mercatura.models.user.User;
 import com.felipemcassiano.Mercatura.services.ShoppingCartService;
 import jakarta.validation.Valid;
@@ -21,9 +21,9 @@ public class ShoppingCartController {
     }
 
     @GetMapping()
-    public ResponseEntity<ShoppingCartDTO> get(@AuthenticationPrincipal User userDetails) {
+    public ResponseEntity<ShoppingCart> get(@AuthenticationPrincipal User userDetails) {
         String userEmail = userDetails.getUsername();
-        ShoppingCartDTO shoppingCart = shoppingCartService.getCartByUser(userEmail);
+        ShoppingCart shoppingCart = shoppingCartService.getCartByUser(userEmail);
         if (shoppingCart.products().isEmpty()) {
             return ResponseEntity.noContent().build();
 

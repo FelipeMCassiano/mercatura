@@ -1,8 +1,8 @@
 package com.felipemcassiano.Mercatura.controllers;
 
+import com.felipemcassiano.Mercatura.dtos.UserDTO;
+import com.felipemcassiano.Mercatura.dtos.UserLoginResponseDTO;
 import com.felipemcassiano.Mercatura.models.user.User;
-import com.felipemcassiano.Mercatura.models.user.UserDTO;
-import com.felipemcassiano.Mercatura.models.user.UserLoginResponseDTO;
 import com.felipemcassiano.Mercatura.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

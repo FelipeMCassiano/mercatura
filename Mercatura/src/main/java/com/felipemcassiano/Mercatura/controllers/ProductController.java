@@ -1,16 +1,15 @@
 package com.felipemcassiano.Mercatura.controllers;
 
 
-import com.felipemcassiano.Mercatura.models.product.ProductDTO;
-import com.felipemcassiano.Mercatura.models.product.ProductFilterDTO;
-import com.felipemcassiano.Mercatura.models.product.ProductResponseDTO;
+import com.felipemcassiano.Mercatura.dtos.ApiResponseDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductFilterDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductResponseDTO;
 import com.felipemcassiano.Mercatura.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("products")
@@ -28,9 +27,9 @@ public class ProductController {
     }
 
     @PostMapping("filter")
-    public ResponseEntity<List<ProductResponseDTO>> filterProducts(@RequestBody ProductFilterDTO request) {
-        var response = productService.filter(request);
-        if (response.isEmpty()) {
+    public ResponseEntity<ApiResponseDTO<ProductResponseDTO>> filterProducts(@RequestBody ProductFilterDTO request, @RequestParam("page") int page, @RequestParam("size") int size) {
+        var response = productService.filter(request, page, size);
+        if (response.items().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
@@ -50,9 +49,8 @@ public class ProductController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    // add pagination
     @GetMapping()
-    public ResponseEntity<List<ProductResponseDTO>> get() {
-        return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
+    public ResponseEntity<ApiResponseDTO<ProductResponseDTO>> get(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return new ResponseEntity<>(productService.findAll(page, size), HttpStatus.OK);
     }
 }

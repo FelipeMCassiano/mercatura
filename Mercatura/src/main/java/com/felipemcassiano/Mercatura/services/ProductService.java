@@ -1,22 +1,24 @@
 package com.felipemcassiano.Mercatura.services;
 
+import com.felipemcassiano.Mercatura.dtos.ApiResponseDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductFilterDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductResponseDTO;
 import com.felipemcassiano.Mercatura.infra.exceptions.EntityConflictException;
 import com.felipemcassiano.Mercatura.models.product.Product;
-import com.felipemcassiano.Mercatura.models.product.ProductDTO;
-import com.felipemcassiano.Mercatura.models.product.ProductFilterDTO;
-import com.felipemcassiano.Mercatura.models.product.ProductResponseDTO;
 import com.felipemcassiano.Mercatura.repositories.ProductRepository;
 import com.felipemcassiano.Mercatura.repositories.ProductSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -64,21 +66,38 @@ public class ProductService {
 
         ProductResponseDTO productResponse = new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getStock(), product.getCategory());
 
-        redisTemplateValueOps.set(key, productResponse, Duration.ofMinutes(1));
+        redisTemplateValueOps.set(key, productResponse, Duration.ofMinutes(cacheDuration));
 
         return productResponse;
     }
 
-    public List<ProductResponseDTO> findAll() {
-        List<Product> products = productRepository.findAll();
-        return products
+    public ApiResponseDTO<ProductResponseDTO> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productPage = productRepository.findAll(null, pageable);
+
+        return new ApiResponseDTO<>(productPage.getContent()
                 .stream()
-                .map(p -> new ProductResponseDTO(p.getId(), p.getName(), p.getPrice(), p.getStock(), p.getCategory())).toList();
+                .map(p -> new ProductResponseDTO(p.getId(),
+                        p.getName(),
+                        p.getPrice(),
+                        p.getStock(),
+                        p.getCategory())).toList(), productPage.getTotalElements(), productPage.getTotalPages());
     }
 
-    public List<ProductResponseDTO> filter(ProductFilterDTO dto) {
-        List<Product> products = productRepository.findAll(ProductSpecification.filter(dto.priceRange() != null ? dto.priceRange().min() : null, dto.priceRange() != null ? dto.priceRange().max() : null, dto.stock(), dto.category()));
-        return products.stream().map(x -> new ProductResponseDTO(x.getId(), x.getName(), x.getPrice(), x.getStock(), x.getCategory())).collect(Collectors.toList());
+    public ApiResponseDTO<ProductResponseDTO> filter(ProductFilterDTO dto, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productPage = productRepository.findAll(ProductSpecification.filter(dto.priceRange() != null ? dto.priceRange().min() : null,
+                dto.priceRange() != null ? dto.priceRange().max() : null,
+                dto.stock(),
+                dto.category()), pageable);
+
+        return new ApiResponseDTO<>(productPage.getContent().stream().map(x -> new ProductResponseDTO(x.getId(),
+                x.getName(),
+                x.getPrice(),
+                x.getStock(),
+                x.getCategory())).toList(),
+                productPage.getTotalElements(),
+                productPage.getTotalPages());
     }
 
 

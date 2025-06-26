@@ -1,9 +1,9 @@
 package com.felipemcassiano.Mercatura.services;
 
+import com.felipemcassiano.Mercatura.infra.CartProductDTO;
+import com.felipemcassiano.Mercatura.infra.CheckoutResponseDTO;
 import com.felipemcassiano.Mercatura.infra.exceptions.InternalException;
-import com.felipemcassiano.Mercatura.models.shoppingCart.CartProductDTO;
-import com.felipemcassiano.Mercatura.models.shoppingCart.CheckoutResponseDTO;
-import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCartDTO;
+import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCart;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -23,7 +23,7 @@ public class StripeService {
     private String currency;
 
 
-    public CheckoutResponseDTO checkout(ShoppingCartDTO shoppingCart) {
+    public CheckoutResponseDTO checkout(ShoppingCart shoppingCart) {
         Stripe.apiKey = secretKey;
 
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();

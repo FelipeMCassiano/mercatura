@@ -1,8 +1,8 @@
 package com.felipemcassiano.Mercatura.infra.cache;
 
 
-import com.felipemcassiano.Mercatura.models.product.ProductResponseDTO;
-import com.felipemcassiano.Mercatura.models.shoppingCart.CartProductDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductResponseDTO;
+import com.felipemcassiano.Mercatura.infra.CartProductDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
