@@ -1,7 +1,7 @@
 package com.felipemcassiano.Mercatura.services;
 
-import com.felipemcassiano.Mercatura.infra.CartProductDTO;
-import com.felipemcassiano.Mercatura.infra.CheckoutResponseDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductPriceRangeFilterDTO;
+import com.felipemcassiano.Mercatura.dtos.UserDTO;
 import com.felipemcassiano.Mercatura.infra.exceptions.InternalException;
 import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCart;
 import com.stripe.Stripe;
@@ -23,11 +23,11 @@ public class StripeService {
     private String currency;
 
 
-    public CheckoutResponseDTO checkout(ShoppingCart shoppingCart) {
+    public ProductPriceRangeFilterDTO.CheckoutResponseDTO checkout(ShoppingCart shoppingCart) {
         Stripe.apiKey = secretKey;
 
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
-        for (CartProductDTO p : shoppingCart.products()) {
+        for (UserDTO.CartProductDTO p : shoppingCart.products()) {
             lineItems.add(createLineItem(p));
         }
 
@@ -40,13 +40,13 @@ public class StripeService {
 
         try {
             Session session = Session.create(params);
-            return new CheckoutResponseDTO("SUCCESS", "Payment session created", session.getId(), session.getUrl());
+            return new ProductPriceRangeFilterDTO.CheckoutResponseDTO("SUCCESS", "Payment session created", session.getId(), session.getUrl());
         } catch (StripeException ex) {
             throw new InternalException(ex.getMessage());
         }
     }
 
-    private SessionCreateParams.LineItem createLineItem(CartProductDTO product) {
+    private SessionCreateParams.LineItem createLineItem(UserDTO.CartProductDTO product) {
         SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData
                 .builder()
                 .setName(product.name())

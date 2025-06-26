@@ -1,7 +1,7 @@
 package com.felipemcassiano.Mercatura.controllers;
 
 import com.felipemcassiano.Mercatura.dtos.AddItemDTO;
-import com.felipemcassiano.Mercatura.infra.CheckoutResponseDTO;
+import com.felipemcassiano.Mercatura.dtos.ProductPriceRangeFilterDTO;
 import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCart;
 import com.felipemcassiano.Mercatura.models.user.User;
 import com.felipemcassiano.Mercatura.services.ShoppingCartService;
@@ -39,9 +39,9 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<CheckoutResponseDTO> checkout(@AuthenticationPrincipal User userDetails) {
+    public ResponseEntity<ProductPriceRangeFilterDTO.CheckoutResponseDTO> checkout(@AuthenticationPrincipal User userDetails) {
         String userEmail = userDetails.getUsername();
-        CheckoutResponseDTO response = shoppingCartService.checkout(userEmail);
+        ProductPriceRangeFilterDTO.CheckoutResponseDTO response = shoppingCartService.checkout(userEmail);
 
         return ResponseEntity.ok(response);
     }
