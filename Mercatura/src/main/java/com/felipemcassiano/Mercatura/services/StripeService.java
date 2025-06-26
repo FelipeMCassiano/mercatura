@@ -1,7 +1,7 @@
 package com.felipemcassiano.Mercatura.services;
 
+import com.felipemcassiano.Mercatura.dtos.CartProductDTO;
 import com.felipemcassiano.Mercatura.dtos.ProductPriceRangeFilterDTO;
-import com.felipemcassiano.Mercatura.dtos.UserDTO;
 import com.felipemcassiano.Mercatura.infra.exceptions.InternalException;
 import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCart;
 import com.stripe.Stripe;
@@ -27,7 +27,7 @@ public class StripeService {
         Stripe.apiKey = secretKey;
 
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
-        for (UserDTO.CartProductDTO p : shoppingCart.products()) {
+        for (CartProductDTO p : shoppingCart.products()) {
             lineItems.add(createLineItem(p));
         }
 
@@ -46,7 +46,7 @@ public class StripeService {
         }
     }
 
-    private SessionCreateParams.LineItem createLineItem(UserDTO.CartProductDTO product) {
+    private SessionCreateParams.LineItem createLineItem(CartProductDTO product) {
         SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData
                 .builder()
                 .setName(product.name())

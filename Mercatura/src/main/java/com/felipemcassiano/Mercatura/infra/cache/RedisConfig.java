@@ -1,7 +1,7 @@
 package com.felipemcassiano.Mercatura.infra.cache;
 
 
-import com.felipemcassiano.Mercatura.dtos.UserDTO;
+import com.felipemcassiano.Mercatura.dtos.CartProductDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,13 +23,13 @@ public class RedisConfig {
     private int cacheDuration;
 
     @Bean
-    public RedisTemplate<String, UserDTO.CartProductDTO> cartProductRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, UserDTO.CartProductDTO> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, CartProductDTO> cartProductRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, CartProductDTO> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(UserDTO.CartProductDTO.class));
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(CartProductDTO.class));
 
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
