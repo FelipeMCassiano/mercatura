@@ -8,7 +8,6 @@ import com.felipemcassiano.Mercatura.models.product.Product;
 import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCart;
 import com.felipemcassiano.Mercatura.repositories.ProductRepository;
 import com.felipemcassiano.Mercatura.repositories.UserRepository;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +16,13 @@ import java.util.Optional;
 
 @Service
 public class ShoppingCartService {
-    private final ListOperations<String, UserDTO.CartProductDTO> redisListOps;
+    private final RedisTemplate<String, UserDTO.CartProductDTO> redisListOps;
     private final ProductRepository productRepository;
     private final StripeService stripeService;
 
 
     public ShoppingCartService(RedisTemplate<String, UserDTO.CartProductDTO> redisTemplate, ProductRepository productRepository, UserRepository userRepository, ProductRepository productRepository1, StripeService stripeService) {
-        this.redisListOps = redisTemplate.opsForList();
+        this.redisListOps = redisTemplate;
         this.productRepository = productRepository1;
         this.stripeService = stripeService;
     }
@@ -31,7 +30,7 @@ public class ShoppingCartService {
     public void addToCart(String userEmail, AddItemDTO dto) {
         String key = String.format("cart:%s", userEmail);
 
-        List<UserDTO.CartProductDTO> cart = redisListOps.range(key, 0, -1);
+        List<UserDTO.CartProductDTO> cart = redisListOps.opsForList().range(key, 0, -1);
         Optional<Product> product = productRepository.findById(dto.productId());
 
         if (product.isEmpty()) return;
@@ -44,15 +43,15 @@ public class ShoppingCartService {
             for (UserDTO.CartProductDTO cartProduct : cart) {
                 if (dto.productId().equals(cartProduct.id())) {
                     var updatedCartProduct = new UserDTO.CartProductDTO(cartProduct.id(), cartProduct.name(), cartProduct.price(), cartProduct.quantity() + dto.quantity(), cartProduct.category());
-                    redisListOps.remove(key, 1, cartProduct);
-                    redisListOps.rightPush(key, updatedCartProduct);
+                    redisListOps.opsForList().remove(key, 1, cartProduct);
+                    redisListOps.opsForList().rightPush(key, updatedCartProduct);
                     return;
                 }
             }
         }
 
         UserDTO.CartProductDTO productToBeCached = new UserDTO.CartProductDTO(product.get().getId(), product.get().getName(), product.get().getPrice(), dto.quantity(), product.get().getCategory());
-        redisListOps.rightPush(key, productToBeCached);
+        redisListOps.opsForList().rightPush(key, productToBeCached);
     }
 
     public ShoppingCart getCartByUser(String userEmail) {
@@ -67,7 +66,7 @@ public class ShoppingCartService {
     private ShoppingCart getShoppingCartByUser(String userEmail) {
         String key = String.format("cart:%s", userEmail);
 
-        List<UserDTO.CartProductDTO> cart = redisListOps.range(key, 0, -1);
+        List<UserDTO.CartProductDTO> cart = redisListOps.opsForList().range(key, 0, -1);
 
         Long total = cart != null ? cart.stream().map(x -> x.price() * x.quantity()).reduce(0l, Long::sum) : 0;
 
