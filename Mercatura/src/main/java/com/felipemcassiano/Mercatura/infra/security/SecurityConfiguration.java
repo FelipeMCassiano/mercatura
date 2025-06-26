@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/products/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/products/filter").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
