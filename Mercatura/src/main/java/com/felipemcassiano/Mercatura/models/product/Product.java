@@ -1,5 +1,6 @@
 package com.felipemcassiano.Mercatura.models.product;
 
+import com.felipemcassiano.Mercatura.dtos.ProductDTO;
 import jakarta.persistence.*;
 
 @Table

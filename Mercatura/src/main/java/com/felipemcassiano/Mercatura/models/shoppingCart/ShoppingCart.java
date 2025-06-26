@@ -1,7 +1,9 @@
 package com.felipemcassiano.Mercatura.models.shoppingCart;
 
+import com.felipemcassiano.Mercatura.infra.CartProductDTO;
+
 import java.util.List;
 
 
-public record ShoppingCartDTO(List<CartProductDTO> products, Long total) {
+public record ShoppingCart(List<CartProductDTO> products, Long total) {
 }
