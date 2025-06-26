@@ -32,10 +32,12 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register-admin").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/products/*").hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.GET, "/products").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products/{id}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/products/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/products/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/filter").permitAll()
                         .anyRequest().authenticated()
                 )
