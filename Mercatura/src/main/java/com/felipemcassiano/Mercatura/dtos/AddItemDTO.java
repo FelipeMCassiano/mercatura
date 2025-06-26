@@ -1,4 +1,4 @@
-package com.felipemcassiano.Mercatura.models.shoppingCart;
+package com.felipemcassiano.Mercatura.dtos;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

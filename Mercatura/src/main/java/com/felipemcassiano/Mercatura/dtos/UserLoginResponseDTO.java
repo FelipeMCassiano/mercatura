@@ -1,4 +1,4 @@
-package com.felipemcassiano.Mercatura.models.user;
+package com.felipemcassiano.Mercatura.dtos;
 
 public record UserLoginResponseDTO(String token) {
 }

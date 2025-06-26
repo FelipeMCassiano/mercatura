@@ -1,4 +1,4 @@
-package com.felipemcassiano.Mercatura.models.user;
+package com.felipemcassiano.Mercatura.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.felipemcassiano.Mercatura.models.product;
+package com.felipemcassiano.Mercatura.dtos;
 
 import jakarta.annotation.Nullable;
 

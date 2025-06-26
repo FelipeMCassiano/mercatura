@@ -1,4 +1,6 @@
-package com.felipemcassiano.Mercatura.models.product;
+package com.felipemcassiano.Mercatura.dtos;
+
+import com.felipemcassiano.Mercatura.models.product.ProductCategory;
 
 import java.io.Serializable;
 
