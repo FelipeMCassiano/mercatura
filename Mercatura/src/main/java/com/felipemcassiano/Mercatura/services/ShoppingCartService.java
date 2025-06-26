@@ -4,6 +4,7 @@ import com.felipemcassiano.Mercatura.dtos.AddItemDTO;
 import com.felipemcassiano.Mercatura.dtos.CartProductDTO;
 import com.felipemcassiano.Mercatura.dtos.ProductPriceRangeFilterDTO;
 import com.felipemcassiano.Mercatura.infra.exceptions.NotEnoughStockException;
+import com.felipemcassiano.Mercatura.infra.exceptions.NotFoundEntityException;
 import com.felipemcassiano.Mercatura.models.product.Product;
 import com.felipemcassiano.Mercatura.models.shoppingCart.ShoppingCart;
 import com.felipemcassiano.Mercatura.repositories.ProductRepository;
@@ -33,13 +34,13 @@ public class ShoppingCartService {
         List<CartProductDTO> cart = redisListOps.opsForList().range(key, 0, -1);
         Optional<Product> product = productRepository.findById(dto.productId());
 
-        if (product.isEmpty()) return;
+        if (product.isEmpty()) throw new NotFoundEntityException("Product not found");
 
         if ((product.get().getStock() - 1) < 1) {
             throw new NotEnoughStockException();
         }
 
-        if (cart != null) {
+        if (cart != null && !cart.isEmpty()) {
             for (CartProductDTO cartProduct : cart) {
                 if (dto.productId().equals(cartProduct.id())) {
                     var updatedCartProduct = new CartProductDTO(cartProduct.id(), cartProduct.name(), cartProduct.price(), cartProduct.quantity() + dto.quantity(), cartProduct.category());
